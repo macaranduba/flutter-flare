@@ -42,7 +42,7 @@ class _MyRiveAnimationState extends State<MyRiveAnimation> {
 
     if (file.import(bytes)) {
       // Select an animation by its name
-/*
+
       setState(
         () => _artboard = file.mainArtboard
           ..addController(
@@ -52,7 +52,7 @@ class _MyRiveAnimationState extends State<MyRiveAnimation> {
             _controller2 = SimpleAnimation('spin2'),
           )
       );
-*/
+/*
       setState(
         () {
           _artboard = file.mainArtboard;
@@ -64,7 +64,7 @@ class _MyRiveAnimationState extends State<MyRiveAnimation> {
           );
         }
       );
-
+*/
       _animationsControllers.add(_controller1);
       _animationsControllers.add(_controller2);
     }
@@ -82,7 +82,7 @@ class _MyRiveAnimationState extends State<MyRiveAnimation> {
                 _animationIndex = (_animationIndex + 1) % 2;
                 for(int i = 0; i < _animationsControllers.length; i++) {
                   _animationsControllers[i].isActive = i == _animationIndex;
-                  print('> _animationsControllers[$i].isActive = ${i == _animationIndex}');
+                  print('=> _animationsControllers[$i].isActive = ${i == _animationIndex}');
                 }
               });
             },
