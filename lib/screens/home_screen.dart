@@ -8,57 +8,91 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final riveFileName = 'assets/pulsingheart.riv';
-  Artboard _artboard;
+  final gearsFileName = 'assets/animgears.riv';
+  final armFileName = 'assets/robot_arm.riv';
+  Artboard _gearsArtboard, _armArtboard;
+  RiveAnimationController _gearsController1, _gearsController2;
+  List<RiveAnimationController> _gearsAnimControllers = [];
+  int _gearsAnimIndex = 0;
 
   @override
   void initState() {
-    _loadRiveFile();
+    _loadRiveFiles();
     super.initState();
   }
 
   // loads a Rive file
-  void _loadRiveFile() async {
-    final bytes = await rootBundle.load(riveFileName);
+  void _loadRiveFiles() async {
+    final bytes = await rootBundle.load(gearsFileName);
     final file = RiveFile();
 
     if (file.import(bytes)) {
       // Select an animation by its name
 
-      setState(
-        () => _artboard = file.mainArtboard
-          ..addController(
-            SimpleAnimation('pulse'),
-          )
-      );
+      setState(() => _gearsArtboard = file.mainArtboard
+        ..addController(
+          _gearsController1 = SimpleAnimation('spin2'),
+        )
+        ..addController(
+          _gearsController2 = SimpleAnimation('spin1'),
+        ));
 
+      _gearsAnimControllers.add(_gearsController1);
+      _gearsAnimControllers.add(_gearsController2);
     }
-    print('heart pulse v1');
+
+    // robot arm
+    final armsBytes = await rootBundle.load(armFileName);
+    final armFile = RiveFile();
+    if(armFile.import(armsBytes)) {
+      setState(() => _armArtboard = armFile.mainArtboard
+        ..addController(SimpleAnimation('move'))
+      );
+    }
   }
 
+  /// Show the rive file, when loaded
   @override
   Widget build(BuildContext context) {
-    return _artboard != null ?
-      Scaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Flutter + Flare', style: TextStyle(fontSize: 30), textAlign: TextAlign.center,),
-            Container( // or SizedBox
+    return _gearsArtboard != null ?
+    Scaffold(
+      body: Column (
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _gearsAnimIndex = (_gearsAnimIndex + 1) % _gearsAnimControllers.length;
+                for(int i = 0; i < _gearsAnimControllers.length; i++) {
+                  _gearsAnimControllers[i].isActive = i == _gearsAnimIndex;
+                }
+              });
+            },
+            child: Container(
+              height: 100,
+              width: 100,
+              child: Rive(
+                useArtboardSize: false,
+                artboard: _gearsArtboard,
+                fit: BoxFit.contain,
+              )
+            )
+          ),
+          Container( // or SizedBox
               height: 150,
               width: 150,
               child: Rive(
                 useArtboardSize: false,
-                artboard: _artboard,
+                artboard: _armArtboard,
                 fit: BoxFit.contain,
               )
-            )
-          ],
-        ),
+          )
+
+        ]
       )
-      :
-      Container();
+    )
+        :
+    Container();
   }
 }
-

@@ -1,7 +1,8 @@
-import 'package:flare_test/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
+
+import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -9,22 +10,13 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final riveFileName = 'assets/animgears.riv';
+  final riveFileName = 'assets/pulsingheart.riv';
   Artboard _artboard;
-  //RiveAnimationController _controller1, _controller2;
-  //List<RiveAnimationController> _animationsControllers = [];
-  //int _animationIndex = 0;
 
   @override
   void initState() {
     _loadRiveFile();
     super.initState();
-
-    Future.delayed(Duration(seconds: 4)).then((value) =>
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomeScreen())
-      )
-    );
   }
 
   // loads a Rive file
@@ -36,39 +28,43 @@ class _SplashScreenState extends State<SplashScreen> {
       // Select an animation by its name
 
       setState(
-              () => _artboard = file.mainArtboard
-            ..addController(
-              /*controller1 =*/ SimpleAnimation('spin1'),
-            )
-        /*..addController(
-            _controller2 = SimpleAnimation('spin2'),
-          )*/
+        () => _artboard = file.mainArtboard
+          ..addController(
+            SimpleAnimation('pulse'),
+          )
       );
 
-      /*_animationsControllers.add(_controller1);
-      _animationsControllers.add(_controller2);*/
     }
-    print('v2');
+    Future.delayed(Duration(seconds: 4)).then((value) =>
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => HomeScreen())
+      )
+    );
   }
 
-  /// Show the rive file, when loaded
   @override
   Widget build(BuildContext context) {
     return _artboard != null ?
-    Scaffold(
-        body: Center (
-            child: Container(
-                height: 150,
-                width: 150,
-                child: Rive(
-                  useArtboardSize: false,
-                  artboard: _artboard,
-                  fit: BoxFit.contain,
-                )
+      Scaffold(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Flutter + Flare', style: TextStyle(fontSize: 30), textAlign: TextAlign.center,),
+            Container( // or SizedBox
+              height: 150,
+              width: 150,
+              child: Rive(
+                useArtboardSize: false,
+                artboard: _artboard,
+                fit: BoxFit.contain,
+              )
             )
-        )
-    )
-        :
-    Container();
+          ],
+        ),
+      )
+      :
+      Container();
   }
 }
+
