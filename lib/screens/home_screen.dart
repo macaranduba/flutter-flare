@@ -54,32 +54,13 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Show the rive file, when loaded
   @override
   Widget build(BuildContext context) {
-    return _gearsArtboard != null ?
-    Scaffold(
+    return Scaffold(
       body: Column (
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _gearsAnimIndex = (_gearsAnimIndex + 1) % _gearsAnimControllers.length;
-                for(int i = 0; i < _gearsAnimControllers.length; i++) {
-                  _gearsAnimControllers[i].isActive = i == _gearsAnimIndex;
-                }
-              });
-            },
-            child: Container(
-              height: 100,
-              width: 100,
-              child: Rive(
-                useArtboardSize: false,
-                artboard: _gearsArtboard,
-                fit: BoxFit.contain,
-              )
-            )
-          ),
-          Container( // or SizedBox
+          _armArtboard != null ?
+            Container( // or SizedBox
               height: 150,
               width: 150,
               child: Rive(
@@ -88,11 +69,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 fit: BoxFit.contain,
               )
           )
-
+          : Container(),
+          _gearsArtboard != null ? GestureDetector(
+              onTap: () {
+                setState(() {
+                  _gearsAnimIndex = (_gearsAnimIndex + 1) % _gearsAnimControllers.length;
+                  for(int i = 0; i < _gearsAnimControllers.length; i++) {
+                    _gearsAnimControllers[i].isActive = i == _gearsAnimIndex;
+                  }
+                });
+              },
+              child: Container(
+                height: 100,
+                width: 100,
+                child: Rive(
+                  useArtboardSize: false,
+                  artboard: _gearsArtboard,
+                  fit: BoxFit.contain,
+                )
+              )
+          )
+          : Container(),
         ]
       )
-    )
-        :
-    Container();
+    );
   }
 }
